@@ -11,7 +11,7 @@ Abre una consola y aplica los parametros correspondientes junto a la ruta del ar
 Por ejemplo:
 "Moonbeam.exe -e "C:\carpeta""
 El programa tiene varios parametros y modos de uso.
-Los primeros dos parametros que hay que insertar son los siguientes:
+Los primeros tres parametros que puede que necesites insertar son los siguientes:
 
 	- "-e" para exportar de MBM a XML
 	- "-i" para importar de XML a MBM
@@ -34,7 +34,7 @@ Open a CLI and apply the arguments next to the file's path
 For example:
 "Moonbeam.exe -e "C:\folder""
 The program has various parameters and use modes.
-The first two parameters that you need to insert are:
+The first three parameters that you may need to insert are:
 
 	- "-e" to export MBM to XML
 	- "-i" to import XML to MBM

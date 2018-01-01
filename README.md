@@ -1,6 +1,10 @@
 # Moonbeam
 A MBM&lt;->XML converter with a Spanish dictionary
 
+Minimum requisites
+-----------------------------------------------------------
+.NET Framework 4.7
+
 Spanish
 -----------------------------------------------------------
 Abre una consola y aplica los parametros correspondientes junto a la ruta del archivo.

@@ -13,26 +13,30 @@ namespace Moonbeam
 {
     class PO
     {
-        Po POHeader = new Po
-        {
-            Header = new PoHeader("Shin Megami Tensei IV", "smtivesp@gmail.com", "es")
-            {
-                LanguageTeam = "TraduSquare (SMTIVesp)",
-            }
-        };
-
         public void XML2PO(string file)
         {
+            Po POHeader = new Po
+            {
+                Header = new PoHeader("Shin Megami Tensei IV", "smtivesp@gmail.com", "es")
+                {
+                    LanguageTeam = "TraduSquare (SMTIVesp)",
+                }
+            };
+
             XElement XML = XElement.Load(file);
             int c = 0;
             foreach (XElement entry in XML.Descendants("entry"))
             {
-                string source = entry.Nodes().ElementAt(0).ToString();
-                string target = entry.Nodes().ElementAt(1).ToString();                
-                POExport(source.Replace("<source>", "").Replace("</source>", "").Replace("{F801}", "\n"), target.Replace("<target>", "").Replace("</target>", "").Replace("{F801}", "\n"), c);
+                string source = entry.Element("source").Value;
+                if (string.IsNullOrEmpty(source))
+                    source = "<empty>";
+                string target = entry.Element("target").Value;
+                if (string.IsNullOrEmpty(target))
+                    target = "<empty>";
+                POExport(POHeader, source.Replace("{F801}", "\n"), target.Replace("{F801}", "\n"), c);
                 c++;
             }
-            POWrite(file.Replace(".xml", ""));            
+            POWrite(POHeader, file.Replace(".xml", ""));            
         }
 
         public XElement PO2XML(string file)
@@ -43,18 +47,18 @@ namespace Moonbeam
                 POBuffer = binary.ConvertTo<Po>();
                 return new XElement("mbm", from entry in POBuffer.Entries
                                            let idattr = new XAttribute("id", entry.Context)
-                                           let source = new XElement("source", entry.Original.Replace("\n", "{F801}"))
-                                           let target = new XElement("target", entry.Text.Replace("\n", "{F801}"))
+                                           let source = new XElement("source", entry.Original.Replace("\n", "{F801}").Replace("<empty>", ""))
+                                           let target = new XElement("target", entry.Text.Replace("\n", "{F801}").Replace("<empty>", ""))
                                            select new XElement("entry", idattr, source, target));
             }               
         }
 
-        public void POExport(string source, string target, int i)
+        public void POExport(Po POHeader, string source, string target, int i)
         {
             POHeader.Add(new PoEntry(source) { Translated = target, Context = i.ToString() });
         }
 
-        public void POWrite(string file)
+        public void POWrite(Po POHeader, string file)
         {
             POHeader.ConvertTo<BinaryFormat>().Stream.WriteTo(file + ".po");
         }

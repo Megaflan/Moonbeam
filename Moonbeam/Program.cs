@@ -10,6 +10,7 @@ namespace Moonbeam
         static void Main(string[] args)
         {
             MBM.LoadDictionary(File.ReadAllLines("dic.txt"));
+            PO PO = new PO();
             switch (args[0])
             {
                 case "-e":
@@ -67,6 +68,30 @@ namespace Moonbeam
                         let idattr = new XAttribute("id", entry.Id)
                         select new XElement("entry", idattr, entry.Text))));
                     File.WriteAllText(args[1] + ".xml", root.ToString());
+                    break;
+                case "-xml2po":                    
+                    switch (Path.GetExtension(args[1]).ToLower())
+                    {
+                        case ".xml":
+                            PO.XML2PO(args[1]);
+                            break;
+                        default:
+                            foreach (var filefound in Directory.GetFiles(args[1], "*.xml", SearchOption.AllDirectories))
+                                PO.XML2PO(filefound);
+                            break;
+                    }
+                    break;
+                case "-po2xml":
+                    switch (Path.GetExtension(args[1]).ToLower())
+                    {
+                        case ".po":
+                            File.WriteAllText(args[1].Replace(".po", ".xml"), PO.PO2XML(args[1]).ToString());
+                            break;
+                        default:
+                            foreach (var filefound in Directory.GetFiles(args[1], "*.po", SearchOption.AllDirectories))
+                                File.WriteAllText(filefound.Replace(".po", ".xml"), PO.PO2XML(filefound).ToString());
+                            break;
+                    }
                     break;
             }
             

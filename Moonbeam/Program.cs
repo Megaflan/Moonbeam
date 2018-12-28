@@ -11,95 +11,97 @@ namespace Moonbeam
         {
             MBM.LoadDictionary(File.ReadAllLines("dic.txt"));
             PO PO = new PO();
-            switch (args[0])
+            if (args.Length != 0)
             {
-                case "-e":
-                    switch (Path.GetExtension(args[1]).ToLower())
-                    {
-                        case ".mbm":
-                            File.WriteAllText(args[1] + ".xml", MBM.FromByteArray(File.ReadAllBytes(args[1])).ToXElement().ToString());
-                            break;
-                        default:
-                            try
-                            {
-                                foreach (var filefound in Directory.GetFiles(args[1], "*.mbm", SearchOption.AllDirectories))
+                switch (args[0])
+                {
+                    case "-e":
+                        switch (Path.GetExtension(args[1]).ToLower())
+                        {
+                            case ".mbm":
+                                File.WriteAllText(args[1] + ".xml", MBM.FromByteArray(File.ReadAllBytes(args[1])).ToXElement().ToString());
+                                break;
+                            default:
+                                try
                                 {
-                                    File.WriteAllText(filefound + ".xml", MBM.FromByteArray(File.ReadAllBytes(filefound)).ToXElement().ToString());
+                                    foreach (var filefound in Directory.GetFiles(args[1], "*.mbm", SearchOption.AllDirectories))
+                                    {
+                                        File.WriteAllText(filefound + ".xml", MBM.FromByteArray(File.ReadAllBytes(filefound)).ToXElement().ToString());
+                                    }
                                 }
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine("ERROR");
-                                Console.WriteLine(ex);
-                                Console.ReadLine();
-                            }
-                            //recursive search
-                            break;
-                    }
-                    break;
-                case "-i":
-                    switch (Path.GetExtension(args[1]).ToLower())
-                    {
-                        case ".xml":
-                            File.WriteAllBytes(args[1] + ".mbm", MBM.FromXElement(XElement.Load(args[1])).ToByteArray());
-                            break;
-                        default:
-                            try
-                            {
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine("ERROR");
+                                    Console.WriteLine(ex);
+                                    Console.ReadLine();
+                                }
+                                //recursive search
+                                break;
+                        }
+                        break;
+                    case "-i":
+                        switch (Path.GetExtension(args[1]).ToLower())
+                        {
+                            case ".xml":
+                                File.WriteAllBytes(args[1] + ".mbm", MBM.FromXElement(XElement.Load(args[1])).ToByteArray());
+                                break;
+                            default:
+                                try
+                                {
+                                    foreach (var filefound in Directory.GetFiles(args[1], "*.xml", SearchOption.AllDirectories))
+                                    {
+                                        File.WriteAllBytes(filefound + ".mbm", MBM.FromXElement(XElement.Load(filefound)).ToByteArray());
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine("ERROR");
+                                    Console.WriteLine(ex);
+                                    Console.ReadLine();
+                                }
+                                //recursive search
+                                break;
+                        }
+                        break;
+                    case "-v":
+                        var root = new XElement("mbms", Directory.GetFiles(args[1], "*.mbm", SearchOption.AllDirectories)
+                            .Select(path => new XElement("mbm", new XAttribute("path", path),
+                            from entry in MBM.FromByteArray(File.ReadAllBytes(path))
+                            let idattr = new XAttribute("id", entry.Id)
+                            select new XElement("entry", idattr, entry.Text))));
+                        File.WriteAllText(args[1] + ".xml", root.ToString());
+                        break;
+                    case "-xml2po":
+                        switch (Path.GetExtension(args[1]).ToLower())
+                        {
+                            case ".xml":
+                                PO.XML2PO(args[1]);
+                                break;
+                            default:
                                 foreach (var filefound in Directory.GetFiles(args[1], "*.xml", SearchOption.AllDirectories))
-                                {
-                                    File.WriteAllBytes(filefound + ".mbm", MBM.FromXElement(XElement.Load(filefound)).ToByteArray());
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine("ERROR");
-                                Console.WriteLine(ex);
-                                Console.ReadLine();
-                            }
-                            //recursive search
-                            break;
-                    }
-                    break;
-                case "-v":
-                    var root = new XElement("mbms", Directory.GetFiles(args[1], "*.mbm", SearchOption.AllDirectories)
-                        .Select(path => new XElement("mbm", new XAttribute("path", path),
-                        from entry in MBM.FromByteArray(File.ReadAllBytes(path))
-                        let idattr = new XAttribute("id", entry.Id)
-                        select new XElement("entry", idattr, entry.Text))));
-                    File.WriteAllText(args[1] + ".xml", root.ToString());
-                    break;
-                case "-xml2po":                    
-                    switch (Path.GetExtension(args[1]).ToLower())
-                    {
-                        case ".xml":
-                            PO.XML2PO(args[1]);
-                            break;
-                        default:
-                            foreach (var filefound in Directory.GetFiles(args[1], "*.xml", SearchOption.AllDirectories))
-                                PO.XML2PO(filefound);
-                            break;
-                    }
-                    break;
-                case "-po2xml":
-                    switch (Path.GetExtension(args[1]).ToLower())
-                    {
-                        case ".po":
-                            File.WriteAllText(args[1].Replace(".po", ".xml"), PO.PO2XML(args[1]).ToString());
-                            break;
-                        default:
-                            foreach (var filefound in Directory.GetFiles(args[1], "*.po", SearchOption.AllDirectories))
-                                File.WriteAllText(filefound.Replace(".po", ".xml"), PO.PO2XML(filefound).ToString());
-                            break;
-                    }
-                    break;
-                default:
-                    Console.WriteLine("Usage: Moonbeam.exe <-e/-i/-v/-xml2po/-po2xml>");
-                    Console.WriteLine("Export XML to Po: Moonbean.exe -xml2po \"file\"");
-                    break;
-
+                                    PO.XML2PO(filefound);
+                                break;
+                        }
+                        break;
+                    case "-po2xml":
+                        switch (Path.GetExtension(args[1]).ToLower())
+                        {
+                            case ".po":
+                                File.WriteAllText(args[1].Replace(".po", ".xml"), PO.PO2XML(args[1]).ToString());
+                                break;
+                            default:
+                                foreach (var filefound in Directory.GetFiles(args[1], "*.po", SearchOption.AllDirectories))
+                                    File.WriteAllText(filefound.Replace(".po", ".xml"), PO.PO2XML(filefound).ToString());
+                                break;
+                        }
+                        break;
+                }
             }
-            
+            else
+            {
+                Console.WriteLine("Usage: Moonbeam.exe <-e/-i/-v/-xml2po/-po2xml>\nExport XML to Po: Moonbean.exe -xml2po \"file\"");
+                Console.ReadLine();
+            }                
         }
 
         // Enter a root directory to test all MBMs in the directory

@@ -28,21 +28,25 @@ namespace Moonbeam
             foreach (XElement entry in XML.Descendants("entry"))
             {
                 string source = entry.Nodes().ElementAt(0).ToString();
-                string target = entry.Nodes().ElementAt(1).ToString();
-                POExport(source.Replace("<source>", "").Replace("</source>", ""), target.Replace("<target>", "").Replace("</target>", ""), c);
+                string target = entry.Nodes().ElementAt(1).ToString();                
+                POExport(source.Replace("<source>", "").Replace("</source>", "").Replace("{F801}", "\n"), target.Replace("<target>", "").Replace("</target>", "").Replace("{F801}", "\n"), c);
                 c++;
             }
-            POWrite(file.Replace(".xml", ""));
+            POWrite(file.Replace(".xml", ""));            
         }
 
         public XElement PO2XML(string file)
         {
-            var POBuffer = new BinaryFormat(new DataStream(file, FileOpenMode.Read)).ConvertTo<Po>();
-            return new XElement("mbm", from entry in POBuffer.Entries
-                                       let idattr = new XAttribute("id", entry.Context)
-                                       let source = new XElement("source", entry.Original)
-                                       let target = new XElement("target", entry.Text)
-                                       select new XElement("entry", idattr, source, target));
+            Po POBuffer;
+            using (var binary = new BinaryFormat(file))
+            {
+                POBuffer = binary.ConvertTo<Po>();
+                return new XElement("mbm", from entry in POBuffer.Entries
+                                           let idattr = new XAttribute("id", entry.Context)
+                                           let source = new XElement("source", entry.Original.Replace("\n", "{F801}"))
+                                           let target = new XElement("target", entry.Text.Replace("\n", "{F801}"))
+                                           select new XElement("entry", idattr, source, target));
+            }               
         }
 
         public void POExport(string source, string target, int i)

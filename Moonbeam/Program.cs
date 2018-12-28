@@ -93,6 +93,11 @@ namespace Moonbeam
                             break;
                     }
                     break;
+                default:
+                    Console.WriteLine("Usage: Moonbeam.exe <-e/-i/-v/-xml2po/-po2xml>");
+                    Console.WriteLine("Export XML to Po: Moonbean.exe -xml2po \"file\"");
+                    break;
+
             }
             
         }

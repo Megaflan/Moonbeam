@@ -28,6 +28,11 @@ la busqueda recursiva tratará de buscar todos los archivos a convertir dentro d
 Por ejemplo:
 "Moonbeam.exe -e "C:\carpeta\"
 
+¡Además hemos añadido algo nuevo!
+
+Puedes convertir los archivos XML al formato GNU Gettext PO con "Moonbeam.exe -xml2po "C:\carpeta\"
+Y viceversa con "Moonbeam.exe -po2xml "C:\carpeta\"
+
 English
 -----------------------------------------------------------
 Open a CLI and apply the arguments next to the file's path
@@ -50,3 +55,8 @@ The recursive mode is enable when you only apply into the path the folder where 
 search will try to find all the files to convert inside the path.
 For example:
 "Moonbeam.exe -e "C:\folder""
+
+We also added something new!
+
+You can convert the XML files to the GNU Gettext PO format with "Moonbeam.exe -xml2po" C:\folder\"
+And vice versa with "Moonbeam.exe -po2xml" C:\folder\"

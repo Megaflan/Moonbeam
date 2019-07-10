@@ -27,12 +27,13 @@ namespace Moonbeam
             int c = 0;
             foreach (XElement entry in XML.Descendants("entry"))
             {
+                string target;
                 string source = entry.Element("source").Value;
                 if (string.IsNullOrEmpty(source))
                     source = "<empty>";
-                string target = entry.Element("target").Value;
+                target = entry.Element("target").Value;
                 if (string.IsNullOrEmpty(target))
-                    target = "<empty>";
+                    target = "";
                 POExport(POHeader, source.Replace("{F801}", "\n"), target.Replace("{F801}", "\n"), c);
                 c++;
             }

@@ -49,7 +49,7 @@ namespace Moonbeam
                 return new XElement("mbm", from entry in POBuffer.Entries
                                            let idattr = new XAttribute("id", entry.Context)
                                            let source = new XElement("source", entry.Original.Replace("\n", "{F801}").Replace("<empty>", ""))
-                                           let target = new XElement("target", entry.Text.Replace("\n", "{F801}").Replace("\\0", "0").Replace("<empty>", ""))
+                                           let target = new XElement("target", entry.Text.Replace("\n", "{F801}").Replace("\\\\0", "\\0").Replace("<empty>", ""))
                                            select new XElement("entry", idattr, source, target));
             }               
         }

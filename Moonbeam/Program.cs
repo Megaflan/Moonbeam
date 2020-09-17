@@ -43,7 +43,7 @@ namespace Moonbeam
                         switch (Path.GetExtension(args[1]).ToLower())
                         {
                             case ".xml":
-                                File.WriteAllBytes(args[1] + ".mbm", MBM.FromXElement(XElement.Load(args[1])).ToByteArray());
+                                File.WriteAllBytes(Path.GetFileNameWithoutExtension(args[1]), MBM.FromXElement(XElement.Load(args[1])).ToByteArray());
                                 break;
                             default:
                                 try
@@ -70,6 +70,9 @@ namespace Moonbeam
                             let idattr = new XAttribute("id", entry.Id)
                             select new XElement("entry", idattr, entry.Text))));
                         File.WriteAllText(args[1] + ".xml", root.ToString());
+                        break;
+                    case "-profile":
+                        PO.ProfileMode(args[1]);
                         break;
                     case "-xml2po":
                         switch (Path.GetExtension(args[1]).ToLower())

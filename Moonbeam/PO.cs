@@ -37,7 +37,7 @@ namespace Moonbeam
                 POExport(POHeader, source.Replace("{F801}", "\n"), target.Replace("{F801}", "\n"), c);
                 c++;
             }
-            POWrite(POHeader, file.Replace(".xml", ""));            
+            POWrite(POHeader, Path.GetFileNameWithoutExtension(file));            
         }
 
         public XElement PO2XML(string file)
@@ -61,7 +61,26 @@ namespace Moonbeam
 
         public void POWrite(Po POHeader, string file)
         {
-            POHeader.ConvertTo<BinaryFormat>().Stream.WriteTo(file + ".po");
+            POHeader.ConvertTo<BinaryFormat>().Stream.WriteTo(Path.GetFileNameWithoutExtension(file) + ".po");
+        }
+
+        public void ProfileMode(string file)
+        {
+            Po POBuffer;
+            using (var binary = new BinaryFormat(file))
+            {
+                POBuffer = binary.ConvertTo<Po>();
+                foreach (var entry in POBuffer.Entries)
+                {
+                    var lines = entry.Text.Split('\n');
+                    foreach (var line in lines)
+                    {
+                        if (line.Length > 45)
+                            Console.WriteLine(entry.Context + " // " + "Line length exceeded: " + line.Length + " // " + line);
+                    }
+                }
+                Console.ReadLine();
+            }
         }
 
     }

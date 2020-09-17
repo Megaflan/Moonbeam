@@ -112,6 +112,7 @@ namespace Moonbeam
                     case 1: case 2: case 0x12: case 0x16: case 0x17: case 0x18: return new int[0];
                     case 0x14: case 0x7C: return new[] { 1, 1 };
                     case 0x13: return new[] { 2, 2 };
+                    case 0x1B: return new[] { 2, 2, 2 };
                     case 0x7B: return new[] { 1, 1, 1, 1 };
                     default: return new[] { 1 };
                 }
